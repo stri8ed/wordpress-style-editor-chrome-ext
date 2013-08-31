@@ -1,0 +1,133 @@
+<body>
+    <style>
+        body { 
+            font-size: 11px; 
+            font-family: arial, helvetica,sans-serif;
+            background: #FFF; 
+            margin: 0px;
+            padding: 0px;
+        }
+        
+        #content {
+            margin:10px;
+        }
+        
+        p { 
+            color: black; 
+            font-size: 12px;
+            margin:0px;
+            padding: 3px;
+        }
+        
+        .hide {
+            display: none;
+            opacity: 0;
+        }
+        
+        #error, #success { 
+            margin-top: 6px;
+            padding: 5px;
+            transition: opacity 1s ease;
+        }
+        
+        #saving {
+           /* background: none;
+           color: #3b3d3f; */
+        }
+        
+        #success {
+            background: #eeffea;
+            color: #3d5d36;
+        }
+        
+        #error {
+            color: #df2d2d;
+            background: #fdede8;
+        }
+        
+        .button {
+            background: #e6e6e6;
+            color: #222222;
+            text-decoration: none;
+            border-radius: 0px;
+            display: inline-block;
+            padding: 6px;
+            margin: 3px;
+            border: 1px solid #a3a3a3;
+
+        }
+        
+        .button:active {
+            background: #d3d3d3;
+            border: 1px solid #898989;
+        }
+        
+        .button:hover {
+            border: 1px solid #898989;
+        }
+        
+        h1 {
+            color: #222222;
+            font-size: 11px;
+            font-weight: normal;
+            display: block;
+            border-bottom: 1px solid #e7e7e7;
+            padding: 4px 10px;
+            margin: 0px
+        }
+        
+        h1 b {
+            text-transform:capitalize;
+        }
+        
+        h2 { 
+            margin-bottom: 5px; 
+            font-size: 11px; 
+            font-weight: normal;
+        }
+        
+        span {
+            font-size: 19px;
+            font-family: Times New Roman;
+            margin:0px;
+            padding:0px;
+            line-height: 10px;
+        }
+        
+        .one {
+            opacity: 0;
+            -webkit-animation: dot 1s infinite;
+            -webkit-animation-delay: 0.0s;
+        }
+
+        .two {
+            opacity: 0;
+            -webkit-animation: dot 1s infinite;
+            -webkit-animation-delay: 0.2s;
+        }
+
+        .three {
+            opacity: 0;
+            -webkit-animation: dot 1s infinite;
+            -webkit-animation-delay: 0.3s;
+        }
+
+        @-webkit-keyframes dot {
+              0% { opacity: .1; }
+             50% { opacity: .3; }
+            100% { opacity: 1; }
+        }
+    </style>
+    <h1 id="subheader">Wordpress Theme: </h1>
+    <div id="content">
+        <h2 id="title">Save style.css modifications</h2>
+
+        <a class="button" id="save" href="#">Save Stylesheet</a>
+        <p id="saving" class="hide">Saving<span class="one">.</span><span class="two">.</span><span class="three">.</span></p>
+        <p id="error" class="hide"><b>Error:</b> You must be logged into Wordpress as admin. <a target="_blank" href="#">Login</a> and try again.</p>
+        <p id="success" class="hide">Stylesheet saved!</p>
+    </div>
+
+    <script src="../js/panel.js" type="text/javascript"></script>
+</body>
+
