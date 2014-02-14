@@ -1,6 +1,6 @@
 {
   "name": "Wordpress Style Editor",
-  "version": "1.1",
+  "version": "1.2",
   "description": "Save CSS changes made in developer tools, directly to the Wordpress stylesheet.",
   "manifest_version": 2,
   "permissions": [
@@ -9,6 +9,14 @@
     "http://*/*",
     "https://*/*"
   ],
+  "page_action": {
+    "default_icon": {        
+      "19": "/img/icon48.png",          
+      "38": "/img/icon48.png"         
+    },
+    "default_title": "Wordpress Style Editor", 
+    "default_popup": "/html/popup.html" 
+  },
   "icons": { "48": "/img/icon48.png",
              "128": "/img/icon128.png" },
          

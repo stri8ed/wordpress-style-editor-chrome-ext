@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style type="text/css">
+            body{
+                width: 250px;
+                font-family: 'Segoe UI', Tahoma, sans-serif;
+                font-size: 12px;
+                margin: 0;
+                padding: 0;
+                background: #f1f0f0;
+            }
+            p {
+                margin: 1em 0 0 0;
+            }
+            .hide {
+                display: none;
+                opacity: 0;
+            }
+            #header {
+                font-size: 14px;
+                font-weight: normal;
+                color: #73B6FF;
+                display: block;
+                padding: 13px;
+                background: #FFF;
+                border-bottom: 1px solid #dad9d9;
+                margin: 0;
+            }
+            #header span:first-letter {
+                text-transform: uppercase !important;
+            }
+            #header span {
+                display: inline-block;
+            }
+            #content {
+                padding: 17px;
+            }
+            .button {
+                border: 1px solid #a7a7a7;
+                border-radius: 3px;
+                background: -webkit-linear-gradient(top, #ececec 0%,#e2e2e2 100%);
+                background: linear-gradient(to bottom, #ececec 0%,#e2e2e2 100%);
+                box-shadow: 0 2px 2px #F7F7F7 inset, 0 1px 2px #D5D5D5;
+                font-size: 14px;
+                color: #464646;
+                text-shadow: 0 1px 0 rgba(255,255,255,.7);
+                text-decoration: none;
+                display: block;
+                text-align: center;
+                padding: 6px;
+            }
+            .button.disabled {
+                opacity: .3;
+                cursor: default;
+            }
+            .button:not(.disabled):hover {
+                background: #E9E9E9;
+                color: #000;
+            }
+            .button:not(.disabled):active {
+                box-shadow: none;
+                background: #E9E9E9;
+            }
+            #saving span {
+                font-size: 19px;
+                font-family: Times New Roman;
+                margin:0px;
+                padding:0px;
+                line-height: 10px;
+            }
+            .one {
+                opacity: 0;
+                -webkit-animation: dot 1s infinite;
+                -webkit-animation-delay: 0.0s;
+            }
+
+            .two {
+                opacity: 0;
+                -webkit-animation: dot 1s infinite;
+                -webkit-animation-delay: 0.2s;
+            }
+
+            .three {
+                opacity: 0;
+                -webkit-animation: dot 1s infinite;
+                -webkit-animation-delay: 0.3s;
+            }
+
+            @-webkit-keyframes dot {
+                  0% { opacity: .1; }
+                 50% { opacity: .3; }
+                100% { opacity: 1; }
+            }
+             @-webkit-keyframes fadeout {
+                  0% { opacity: 1; margin: 1em 0 0 0; }
+                  100% { opacity: 0; margin: 0px; height: 0px; }
+            }
+            .fadeOut{
+                -webkit-animation: fadeout .5s;
+                -webkit-animation-delay: 2s;
+                -webkit-animation-fill-mode:forwards;
+            }
+        </style> 
+    </head>
+    
+    <body>
+    
+    <h1 id="header">Wordpress Theme: </h1>
+    <div id="content">
+
+        <a class="button" id="save" href="#">Save style.css changes</a><br />
+        <input type="checkbox" id="auto" name="auto" /><label for="auto">Automatically save all changes</label>
+        <p id="saving" class="hide">Saving<span class="one">.</span><span class="two">.</span><span class="three">.</span></p>
+        <p id="warning" class="hide">Warning: </p>
+        <p id="success" class="hide fadeOut">Changes saved!</p>
+        <p id="error" class="hide"><b>Error:</b> You must be logged into Wordpress as admin. <a target="_blank" href="#">Login</a> and try again.</p>
+    </div>
+
+   <script src="../js/popup.js" type="text/javascript"></script>
+</body>
+
+</html>
+
+
+

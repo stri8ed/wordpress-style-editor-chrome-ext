@@ -1,42 +1,21 @@
-
-var sendRequest = chrome.runtime.sendMessage.bind(chrome.runtime);
-var tabId = chrome.devtools.inspectedWindow.tabId
-var sidebarPane = null;
+var tabId = chrome.devtools.inspectedWindow.tabId;
 var resourceListener = null;
 
-createSidebarPane(function(pane){
-    sidebarPane = pane;
-    (function init(){
-        sendRequest({ type: 'onUrlChange', tabId: tabId }, function(){
-            initSidebarPane();
-            init();
-        }); 
-    })();
-    initSidebarPane();
+var port = chrome.runtime.connect({ name: 'devtools:' + tabId });
+port.onMessage.addListener(function(msg) {
+    if(msg.type == 'init'){
+        init();
+    }
 });
 
-function initSidebarPane(){
-    isWp(function(wpInfo){
-        if(wpInfo){
-            // tab is a Wordpress site
-            sidebarPane.setPage("../html/panel.html#" + JSON.stringify(wpInfo));
-            sidebarPane.setHeight("27ex");
+function init(){
+    isWp(function(wpInfo){ 
+        if(wpInfo){ 
             watchStylesheet();
-        }
-        else {
-            sidebarPane.setHeight("15ex");
-            sidebarPane.setPage("../html/invalid.html");
+            port.postMessage({ type: 'initPage', body: wpInfo });
+        } else {
             unWatchStylesheet();
         }
-    });
-}
-
-/*
- * create and display the sidebar pane
- */
-function createSidebarPane(callback){
-    chrome.devtools.panels.elements.createSidebarPane("Wordpress Style Editor", function(pane) {
-      callback(pane);
     });
 }
 
@@ -55,9 +34,9 @@ function watchStylesheet(){
     resourceListener = function(resource, content) {
         if (resource.type != "stylesheet") return;
         
-        if(/.+?style\.css/.test(resource.url)){
-            var request = { type: 'updateStylesheet', tabId: tabId, body: { url: resource.url, content: content } };
-            sendRequest(request); 
+        if(/wp-content\/themes\/.+?\/style\.css/.test(resource.url)){
+            var request = { type: 'updateStylesheet', body: { url: resource.url, content: content } };
+            port.postMessage(request); 
         }
     }
     chrome.devtools.inspectedWindow.onResourceContentCommitted.addListener(resourceListener);
@@ -78,7 +57,7 @@ function unWatchStylesheet(){
  */
 function isWp(callback){
     chrome.devtools.inspectedWindow.getResources(function(resources){
-        var regex = /wp-content(.+?style\.css)/;
+        var regex = /wp-content\/themes\/(.+?style\.css)/;
         var result = false;
         // look for wp-content style.css file
         for(var i = 0, resource; i < resources.length; i++){
