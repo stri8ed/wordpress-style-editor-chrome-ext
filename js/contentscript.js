@@ -5,11 +5,19 @@ function init(tabId){
     var port = chrome.runtime.connect({ name: 'contentscript:' + tabId });
     port.onMessage.addListener(function(msg){
         if(msg.type == 'saveStylesheet'){
-            saveStylesheet(msg.body, function(result){
-                port.postMessage({ requestId: msg.requestId, body: result });
+            var response = { 
+                requestId: msg.requestId,
+                status: 1
+            };
+            saveStylesheet(msg.body).then(function(){
+                 port.postMessage(response);
+            }, function(err) {
+                response.status = 0;
+                response.errorMessage = err;
+                port.postMessage(response);
             });
         }
-    })
+    });
 }
 
 /*
@@ -17,41 +25,45 @@ function init(tabId){
  * the POST request to theme-editor.php
  * 
  */
-function getWpNonce(themeEditorUrl, callback){
-    ajax({ type: 'GET', url: themeEditorUrl }, function(res){
-        if(!res){
-            return callback(null);
-        }
-        // extract nonce from ajax response
-        var regex = /id="_wpnonce".*?value="([^"]+)/;
-        var nonce = regex.exec(res)[1] || null;
-        callback(nonce);
+function getWpNonce(themeEditorUrl){
+    return ajax({ type: 'GET', url: themeEditorUrl }).then(function(ajaxResult){
+        return new Promise(function(res, rej) {
+            // extract nonce from ajax response
+            var regex = /id="_wpnonce".*?value="([^"]+)/;
+            var nonce = regex.exec(ajaxResult);
+            if(nonce) {
+                res(nonce[1]);
+            } else {
+                rej("Failed to acquire Wordpress nonce.");
+            }
+        });
     });
 }
-
-
 
 /*
  * Make an ajax request.
  */
-function ajax(options, callback) {
-    var xhr = new XMLHttpRequest();
-    xhr.open(options.type, options.url, true);
-    xhr.setRequestHeader("Content-Type", 'application/x-www-form-urlencoded');
-    
-    xhr.onreadystatechange = function(event) {
-        if (xhr.readyState == 4) {
-            if (xhr.status === 200) {
-                // success
-                callback(xhr.responseText);
-                
-            } 
-            else if(xhr.status === 0) {
-                callback(0);
-            }
+function ajax(options) {
+    return new Promise(function(res, rej) {
+        var xhr = new XMLHttpRequest();
+        xhr.open(options.type, options.url, true);
+
+        if(options.type.toLowerCase() === 'post') {
+            xhr.setRequestHeader("Content-Type", 'application/x-www-form-urlencoded');
         }
-    };
-    xhr.send(options.data);
+
+        xhr.onreadystatechange = function(event) {
+            if (xhr.readyState == 4) {
+                if (xhr.status >= 200 && xhr.status <= 304) {
+                    res(xhr.responseText);
+                } 
+                else {
+                    rej("Request failed. HTTP status code: " + xhr.status);
+                }
+            }
+        };
+        xhr.send(options.data);
+    });
 }
 
 function saveStylesheet(stylesheet, callback){
@@ -75,28 +87,12 @@ function saveStylesheet(stylesheet, callback){
         type: 'POST'
     };
     
-    // get wpnonce so we can authorize the stylesheet update
-    getWpNonce(themeEditorUrl, function(nonce){
-        if(nonce){
-            
-            // prepare data
-            postBody._wpnonce = nonce;
-            opts.data = serialize(postBody);
-
-            ajax(opts, function(result){
-                if(result && result.indexOf('File edited successfully') > -1 ){
-                    callback(true);
-                }
-                else {
-                    callback(false);
-                }
-            });
-        }
-        else {
-            callback(false);
-        }
+    return getWpNonce(themeEditorUrl).then(function(nonce) {
+        // prepare data
+        postBody._wpnonce = nonce;
+        opts.data = serialize(postBody);
+        return ajax(opts);
     });
-
 }
 
 /*

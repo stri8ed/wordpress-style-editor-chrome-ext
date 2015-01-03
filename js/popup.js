@@ -1,3 +1,5 @@
+
+var LOGIN_ERROR = 'You must be logged into Wordpress as admin. <a target="_blank" href="#">Login</a> and try again.';
 var tabId = null;
 
 function sendRequest(req, callback){
@@ -25,7 +27,7 @@ $('auto').click(function(e){
                  toggleButton();
              } else {
                  $('auto').elm.checked = false;
-                 $('error').html( $('error').html().replace('#', wpInfo.adminUrl) ).show();
+                 showError( LOGIN_ERROR.replace('#', wpInfo.adminUrl) );
                  
              }
          });
@@ -48,15 +50,15 @@ $('save').click(function(){
             
             sendRequest({type: 'saveStylesheet' }, function(result){
                 $('saving').hide();
-                if(result){
+                if(result.status == 1){
                     $('success').show();
                 }
                 else {
-                    $('error').html("<b>Error:</b> Failed to save changes. Check your internet connection.").show();
+                    showError(result.errorMessage);
                 }
             });
         } else {
-            $('error').html( $('error').html().replace('#', wpInfo.adminUrl) ).show();
+            showError( LOGIN_ERROR.replace('#', wpInfo.adminUrl) );
         }
     });
 });
@@ -70,6 +72,10 @@ function toggleButton(){
         button.className = button.className.replace('disabled', '');
         button.disabled = false;
     }
+}
+
+function showError(msg) {
+    $('error').html("<b>Error:</b> " + msg).show();
 }
 
 /*

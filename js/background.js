@@ -38,9 +38,11 @@ function onMessage(tabId, port, msg) {
     if(method && api[method]){
         api[method](tabId, msg.body, port);
     } else if(msg.requestId){
-        if(callbacks[msg.requestId]){
-            callbacks[msg.requestId](msg.body);
-            delete callbacks[msg.requestId];
+       var id = msg.requestId;
+       if(callbacks[id]){
+            delete msg.requestId;
+            callbacks[id](msg);
+            delete callbacks[id];
         }
     }
 }
@@ -69,18 +71,18 @@ var api = {
         if(tab && tab.stylesheet){
             var requestId = Math.random();
             callbacks[requestId] = function(result){
-                res(result);
-                if(result){
+                if(result.status == 1){
                     tab.stylesheet = null;
                 }
-            }
+                res(result);
+            };
             tab.contentscript.postMessage({ 
                 type: 'saveStylesheet', 
                 body: tab.stylesheet, 
                 requestId: requestId 
             });
         } else {
-            res(true);
+            res({ status: 1 }); // nothing to save
         }
     },
     
