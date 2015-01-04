@@ -56,7 +56,7 @@ var api = {
         tabs[tabId].stylesheet = req;
         if(tabs[tabId].autoSave){
             api.saveStylesheet(tabId, null, function(result){
-                if(result){
+                if(result.status == 1){
                     tabs[tabId].stylesheet = null;
                 } else {
                     tabs[tabId].autoSave = false;
