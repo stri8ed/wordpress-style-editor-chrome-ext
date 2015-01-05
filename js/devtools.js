@@ -1,5 +1,6 @@
 var tabId = chrome.devtools.inspectedWindow.tabId;
 var resourceListener = null;
+var styleUrl = null;
 
 var port = chrome.runtime.connect({ name: 'devtools:' + tabId });
 port.onMessage.addListener(function(msg) {
@@ -11,10 +12,12 @@ port.onMessage.addListener(function(msg) {
 function init(){
     isWp(function(wpInfo){ 
         if(wpInfo){ 
+            styleUrl = wpInfo.styleUrl;
             watchStylesheet();
             port.postMessage({ type: 'initPage', body: wpInfo });
         } else {
             unWatchStylesheet();
+            styleUrl = null;
         }
     });
 }
@@ -34,7 +37,7 @@ function watchStylesheet(){
     resourceListener = function(resource, content) {
         if (resource.type != "stylesheet") return;
         
-        if(/wp-content\/themes\/.+?\/style\.css/.test(resource.url)){
+        if(resource.url == styleUrl){
             var request = { type: 'updateStylesheet', body: { url: resource.url, content: content } };
             port.postMessage(request); 
         }
@@ -68,9 +71,9 @@ function isWp(callback){
                    // return some basic info about the Wordpress site
                    result = {
                        adminUrl: resource.url.split('/wp-content/')[0] + '/wp-admin',
-                       themeName: /themes\/([^\/]+)/.exec(resource.url)[1]
+                       themeName: /themes\/([^\/]+)/.exec(resource.url)[1],
+                       styleUrl: resource.url
                    };
-                   break;
                }
            }
         }
