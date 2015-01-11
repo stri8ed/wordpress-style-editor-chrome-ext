@@ -1,4 +1,4 @@
-var port = null;
+var wpNonce = null;
 
 function init(tabId){
     // establish connection with background page
@@ -23,9 +23,11 @@ function init(tabId){
 /*
  * Get a wp_nonce that we can use to authorize
  * the POST request to theme-editor.php
- * 
  */
 function getWpNonce(themeEditorUrl){
+    if(wpNonce) {
+        return Promise.resolve(wpNonce);
+    }
     return ajax({ type: 'GET', url: themeEditorUrl }).then(function(ajaxResult){
         return new Promise(function(res, rej) {
             // extract nonce from ajax response
@@ -33,11 +35,25 @@ function getWpNonce(themeEditorUrl){
             var nonce = regex.exec(ajaxResult);
             if(nonce) {
                 res(nonce[1]);
+                cacheNonce(nonce[1]);
             } else {
                 rej("Failed to acquire Wordpress nonce.");
             }
         });
     });
+}
+
+/**
+ * Cache Wordpress nonce. A nonce by default expires in 
+ * 24 hours, but this can be reduced, so better to be safe
+ * and expire sooner.
+ */
+function cacheNonce(val) {
+    var expireTime = 1000 * 30 * 60;
+    wpNonce = val;
+    setTimeout(function() {
+        wpNonce = null;
+    }, expireTime);
 }
 
 /*
