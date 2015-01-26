@@ -1,16 +1,15 @@
 
-var LOGIN_ERROR = 'You must be logged into Wordpress as admin. <a target="_blank" href="#">Login</a> and try again.';
-var tabId = null;
+localizeTexts();
+// extract config info from url hash
+var wpInfo = JSON.parse(document.location.hash.substr(1));
+var tabId = wpInfo.tabId;
+var loginMessage = chrome.i18n.getMessage("loginMessage").replace("#", wpInfo.adminUrl);
+$('header').html( $('header').html() + ' <span>' + wpInfo.themeName + '</span>' );
 
 function sendRequest(req, callback){
     req.tabId = tabId;
     chrome.runtime.sendMessage(req, callback);
 }
-
-// extract config info from url hash
-var wpInfo = JSON.parse(document.location.hash.substr(1));
-tabId = wpInfo.tabId;
-$('header').html( $('header').html() + '<span>' + wpInfo.themeName + '</span>' );
 
 sendRequest({ type: 'isAutoSave'}, function(result){
    if(result){
@@ -27,7 +26,7 @@ $('auto').click(function(e){
                  toggleButton();
              } else {
                  $('auto').elm.checked = false;
-                 showError( LOGIN_ERROR.replace('#', wpInfo.adminUrl) );
+                 showError(loginMessage);
                  
              }
          });
@@ -58,7 +57,7 @@ $('save').click(function(){
                 }
             });
         } else {
-            showError( LOGIN_ERROR.replace('#', wpInfo.adminUrl) );
+            showError(loginMessage);
         }
     });
 });
@@ -76,6 +75,15 @@ function toggleButton(){
 
 function showError(msg) {
     $('error').html("<b>Error:</b> " + msg).show();
+}
+
+function localizeTexts() {
+    var elms = document.querySelectorAll('[data-message]');
+    for(var msg, el, i = 0, l = elms.length; i < l; i++) {
+        el = elms[i];
+        msg = chrome.i18n.getMessage(el.dataset.message);
+        el.innerHTML = msg;
+    }
 }
 
 /*

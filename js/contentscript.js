@@ -37,7 +37,7 @@ function getWpNonce(themeEditorUrl){
                 res(nonce[1]);
                 cacheNonce(nonce[1]);
             } else {
-                rej("Failed to acquire Wordpress nonce.");
+                rej(getText('nonceError'));
             }
         });
     });
@@ -74,7 +74,7 @@ function ajax(options) {
                     res(xhr.responseText);
                 } 
                 else {
-                    rej("Request failed. HTTP status code: " + xhr.status);
+                    rej(getText('httpError') + ' ' + xhr.status);
                 }
             }
         };
@@ -109,6 +109,13 @@ function saveStylesheet(stylesheet, callback){
         opts.data = serialize(postBody);
         return ajax(opts);
     });
+}
+
+/**
+ * Get localized text.
+ */
+function getText(id) {
+    return chrome.i18n.getMessage(id);
 }
 
 /*

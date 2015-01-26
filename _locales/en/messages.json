@@ -1,0 +1,32 @@
+{
+    "extName": {
+        "message": "Wordpress Style Editor"
+    },
+    "extDesc": {
+        "message": "Save CSS changes made in developer tools, directly to the Wordpress stylesheet."
+    },
+    "popupTitle": {
+        "message": "Wordpress Theme:"
+    },
+    "saveButton": {
+        "message": "Save style.css changes"
+    },
+    "autoSave": {
+        "message": "Automatically save all changes"
+    },
+    "saving": {
+        "message": "Saving"
+    },
+    "saved": {
+        "message": "Changes saved!"
+    },
+    "loginMessage": {
+        "message": "You must be logged into Wordpress as admin. <a target='_blank' href='#'>Login</a> and try again."
+    },
+    "nonceError": {
+        "message": "Failed to acquire Wordpress nonce."
+    },
+    "httpError": {
+        "message": "Request failed. HTTP status code:"
+    }
+}

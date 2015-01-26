@@ -62,7 +62,7 @@
                 box-shadow: none;
                 background: #E9E9E9;
             }
-            #saving span {
+            #saving span:not(:first-child) {
                 font-size: 19px;
                 font-family: Times New Roman;
                 margin:0px;
@@ -106,14 +106,15 @@
     
     <body>
     
-    <h1 id="header">Wordpress Theme: </h1>
+    <h1 id="header" data-message="popupTitle"></h1>
     <div id="content">
 
-        <a class="button" id="save" href="#">Save style.css changes</a><br />
-        <input type="checkbox" id="auto" name="auto" /><label for="auto">Automatically save all changes</label>
-        <p id="saving" class="hide">Saving<span class="one">.</span><span class="two">.</span><span class="three">.</span></p>
-        <p id="warning" class="hide">Warning: </p>
-        <p id="success" class="hide fadeOut">Changes saved!</p>
+        <a class="button" id="save" href="#" data-message="saveButton"></a><br />
+        <input type="checkbox" id="auto" name="auto" /><label data-message="autoSave" for="auto"></label>
+        <p id="saving" class="hide">
+            <span data-message="saving"></span><span class="one">.</span><span class="two">.</span><span class="three">.</span>
+        </p>
+        <p id="success" class="hide fadeOut" data-message="saved"></p>
         <p id="error" class="hide"></p>
     </div>
 
