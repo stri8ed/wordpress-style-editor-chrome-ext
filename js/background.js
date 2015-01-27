@@ -82,7 +82,7 @@ var api = {
                 requestId: requestId 
             });
         } else {
-            res({ status: 1 }); // nothing to save
+            res({ status: 2 }); // nothing to save
         }
     },
     
@@ -113,7 +113,7 @@ var api = {
     setAutoSave: function(tabId, req, res){
         tabs[tabId].autoSave = req;
         if(req){
-            animateActionIcon(tabId);
+            animatePageActionIcon(tabId);
         }
     },
     
@@ -165,7 +165,7 @@ function getCookies(tabId, callback){
     });
 }
 
-function animateActionIcon(tabId){
+function animatePageActionIcon(tabId){
     var frames = ['frame1.png', 'frame2.png', 'frame3.png'];
     var index = 2;
     var direction = 1;

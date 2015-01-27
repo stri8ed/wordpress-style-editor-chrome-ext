@@ -23,6 +23,9 @@
     "saved": {
         "message": "Changes saved!"
     },
+    "noChanges": {
+        "message": "No new changes to save."
+    },
     "loginMessage": {
         "message": "You must be logged into Wordpress as admin. <a target='_blank' href='#'>Login</a> and try again."
     },

@@ -45,15 +45,21 @@ $('save').click(function(){
         if(result){
             $('error').hide();
             $('success').hide();
+            $('info').hide();
             $('saving').show();
             
             sendRequest({type: 'saveStylesheet' }, function(result){
                 $('saving').hide();
-                if(result.status == 1){
-                    $('success').show();
-                }
-                else {
-                    showError(result.errorMessage);
+                switch(result.status) {
+                    case 0:
+                        showError(result.errorMessage);
+                        break;
+                    case 1:
+                        $('success').show();
+                        break;
+                    case 2:
+                        $('info').html(getText('noChanges')).show();
+                        break;
                 }
             });
         } else {
@@ -103,12 +109,13 @@ function $(id) {
         hide: function(){
             el.style.display = 'none';
             el.style.opacity = 0;
+            el.offsetWidth = el.offsetWidth; // http://css-tricks.com/restart-css-animation
             return this;
         },
         
-        show: function(prop){
-            el.style.display = prop ? prop : 'block';
-            setTimeout(function(){ el.style.opacity = 1; }, 1);
+        show: function(){
+            el.style.display = 'block';
+            el.style.opacity = 1;
             return this;
         },
         
