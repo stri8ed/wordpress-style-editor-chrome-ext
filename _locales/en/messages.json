@@ -17,6 +17,9 @@
     "saving": {
         "message": "Saving"
     },
+    "error": {
+        "message": "Error"
+    },
     "saved": {
         "message": "Changes saved!"
     },

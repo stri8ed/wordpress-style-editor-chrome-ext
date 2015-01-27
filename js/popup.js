@@ -3,7 +3,7 @@ localizeTexts();
 // extract config info from url hash
 var wpInfo = JSON.parse(document.location.hash.substr(1));
 var tabId = wpInfo.tabId;
-var loginMessage = chrome.i18n.getMessage("loginMessage").replace("#", wpInfo.adminUrl);
+var loginMessage = getText("loginMessage").replace("#", wpInfo.adminUrl);
 $('header').html( $('header').html() + ' <span>' + wpInfo.themeName + '</span>' );
 
 function sendRequest(req, callback){
@@ -74,7 +74,7 @@ function toggleButton(){
 }
 
 function showError(msg) {
-    $('error').html("<b>Error:</b> " + msg).show();
+    $('error').html("<b>" + getText('error') + ":</b> " + msg).show();
 }
 
 function localizeTexts() {
@@ -84,6 +84,13 @@ function localizeTexts() {
         msg = chrome.i18n.getMessage(el.dataset.message);
         el.innerHTML = msg;
     }
+}
+
+/**
+ * Get localized text.
+ */
+function getText(id) {
+    return chrome.i18n.getMessage(id);
 }
 
 /*
